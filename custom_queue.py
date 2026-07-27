@@ -55,7 +55,7 @@ def main() -> None:
     print("QUEUE (FIFO)")
     print("=" * 40)
 
-    # Mypy ko define kar rahe hain ke ye queue sirf int store karegi
+    # Explicit int type here so mypy can check the calls below
     queue: Queue[int] = Queue()
 
     print("\nInserting values: 10, 20, 30, 40")

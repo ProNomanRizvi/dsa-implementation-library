@@ -108,7 +108,7 @@ def main() -> None:
     print("DOUBLY LINKED LIST")
     print("=" * 45)
 
-    # Ab hum mypy ko explicitly batayenge ke ye LinkedList integers store karegi
+    # Explicit int type here so mypy can check the calls below
     linked_list: LinkedList[int] = LinkedList()
 
     print("\nInserting values: 10, 20, 30, 40")

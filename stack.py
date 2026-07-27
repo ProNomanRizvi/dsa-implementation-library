@@ -54,7 +54,7 @@ def main() -> None:
     print("STACK (LIFO)")
     print("=" * 40)
 
-    # Mypy ko batana ke is stack mein specifically integers honge
+    # Explicit int type here so mypy can check the calls below
     stack: Stack[int] = Stack()
 
     print("\nInserting values: 10, 20, 30, 40")

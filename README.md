@@ -11,6 +11,32 @@ Every structure exposes the same four methods so they're easy to compare and reu
 
 This started as practice for interview-style DSA questions and turned into a reference I can pull into other projects instead of re-writing these from memory every time.
 
+## Sample Output
+
+Every module has a runnable `main()` for a quick look at the behavior. Running `python3 stack.py`:
+
+```
+========================================
+STACK (LIFO)
+========================================
+
+Inserting values: 10, 20, 30, 40
+
+Stack:
+10 -> 20 -> 30 -> 40
+
+Deleted (Popped): 40
+
+Stack After Delete:
+10 -> 20 -> 30
+
+Search Results:
+Search 20: True
+Search 100: False
+```
+
+Each of the other four files (`linked_list.py`, `custom_queue.py`, `binary_tree.py`, `bst.py`) runs the same way and prints its own walkthrough.
+
 ## Structures and Big O
 
 ### Linked List (doubly linked, with head/tail pointers)
@@ -148,6 +174,15 @@ print(tree.preorder())  # [50, 30, 20, 40, 60, 80]
 print(tree.postorder()) # [20, 40, 30, 60, 80, 50]
 ```
 
+## Key Decisions
+
+A few choices that came up while building these:
+
+- **Queue uses `collections.deque`, not a plain list.** Popping from index 0 of a Python list is O(n) since every remaining element shifts left. `deque` is doubly-linked under the hood, so `popleft()` stays O(1) regardless of size. The insert/delete/search/display interface is still hand-written — `deque` is only used for the underlying storage.
+- **BST has no self-balancing.** Insert and delete degrade to O(n) if the tree gets skewed (e.g. inserting values that are already sorted). Fixing that means implementing rotations (AVL or Red-Black), which was left out on purpose to keep this repo focused on the base structures rather than turning into a balanced-tree library.
+- **Binary tree deletion swaps in the deepest-rightmost node**, not just any leaf, to keep the tree as close to complete as it was before the deletion. Same idea BSTs use with the inorder successor, just without the ordering constraint to help find it.
+- **No third-party runtime dependencies.** Everything is standard library (`collections`, `typing`). `pytest` and `mypy` are dev-only tools for testing and type checking, which is why there's no `requirements.txt` — there's nothing to pin.
+
 ## Running Tests
 
 This project uses `pytest`. Install it and run the suite from the repo root:
@@ -162,6 +197,12 @@ All structures are covered: insert, delete (including edge cases like empty stru
 ## Why this exists
 
 Every one of these got built the slow way first: manual array shifting, a hand-written hash function, both singly and doubly linked lists, Big O worked out case by case (best, average, worst) before moving on. This repo is the cleaned-up version of that work — one place to check "how does X work and what's its complexity" instead of digging through old practice files.
+
+## Future Improvements
+
+- Self-balancing BST variant (AVL or Red-Black) to fix the O(n) skew case
+- A hash table / hash map implementation to round out the core structure set
+- A min-heap / priority queue, since the queue here is strictly FIFO
 
 ## License
 
