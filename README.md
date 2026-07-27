@@ -142,6 +142,21 @@ print(tree.search(60))  # True
 print(tree.search(70))  # False, just deleted
 ```
 
+## Running Tests
+
+This project uses `pytest`. Install it and run the suite from the repo root:
+
+```bash
+pip install pytest --break-system-packages
+pytest -v
+```
+
+All structures are covered: insert, delete (including edge cases like empty structures, leaf nodes, nodes with two children, and root deletion for the BST), and search.
+
 ## Why this exists
 
 Every one of these got built the slow way first: manual array shifting, a hand-written hash function, both singly and doubly linked lists, Big O worked out case by case (best, average, worst) before moving on. This repo is the cleaned-up version of that work — one place to check "how does X work and what's its complexity" instead of digging through old practice files.
+
+## License
+
+MIT — see [LICENSE](LICENSE) for details.
