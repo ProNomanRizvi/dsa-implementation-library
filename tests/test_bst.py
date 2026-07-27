@@ -54,3 +54,14 @@ def test_empty_bst_display(capsys):
 
     captured = capsys.readouterr()
     assert captured.out.strip() == ""
+
+def test_delete_root_node():
+    bst = BST()
+
+    for value in [50, 30, 70, 20, 40, 60, 80]:
+        bst.insert(value)
+
+    bst.delete(50)
+
+    assert bst.search(50) is False
+    assert bst.inorder() == [20, 30, 40, 60, 70, 80]

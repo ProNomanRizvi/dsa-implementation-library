@@ -26,13 +26,18 @@ def test_search_found_and_not_found():
     assert tree.search(100) is False
 
 
-def test_delete_existing_node():
+def test_delete_existing_node(capsys):
     tree = BinaryTree()
 
     for value in [10, 20, 30, 40, 50]:
         tree.insert(value)
 
     assert tree.delete(20) is True
+
+    tree.display()
+    captured = capsys.readouterr()
+
+    assert captured.out.strip() == "10 -> 50 -> 30 -> 40"
     assert tree.search(20) is False
 
 
