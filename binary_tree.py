@@ -69,6 +69,58 @@ class BinaryTree:
 
         return False
 
+    def delete(self, data):
+        """
+        Delete a node by replacing it with the deepest-rightmost node,
+        then removing that deepest node.
+        Time Complexity: O(n)
+        """
+
+        if self.root is None:
+            return False
+
+        # Tree has only one node
+        if self.root.left is None and self.root.right is None:
+            if self.root.data == data:
+                self.root = None
+                return True
+            return False
+
+        target = None
+        last_node = None
+        last_parent = None
+
+        queue = deque([(self.root, None)])
+
+        while queue:
+            current, parent = queue.popleft()
+
+            if current.data == data:
+                target = current
+
+            last_node = current
+            last_parent = parent
+
+            if current.left:
+                queue.append((current.left, current))
+
+            if current.right:
+                queue.append((current.right, current))
+
+        if target is None:
+            return False
+
+        # Replace target value with deepest-rightmost node value
+        target.data = last_node.data
+
+        # Remove deepest-rightmost node
+        if last_parent.left == last_node:
+            last_parent.left = None
+        else:
+            last_parent.right = None
+
+        return True
+
     def display(self):
         """
         Display the tree in Level-Order.
@@ -112,6 +164,12 @@ def main():
     print("\nSearch Results:")
     print(f"Search 30: {tree.search(30)}")
     print(f"Search 100: {tree.search(100)}")
+
+    print("\nDeleting 20...")
+    tree.delete(20)
+
+    print("\nLevel-Order Traversal After Delete:")
+    tree.display()
 
 
 if __name__ == "__main__":
