@@ -98,7 +98,7 @@ s.display()            # 10 -> 20
 ### Queue
 
 ```python
-from queue import Queue
+from custom_queue import Queue
 
 q = Queue()
 q.insert(10)
