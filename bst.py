@@ -158,17 +158,17 @@ def main():
     print("\nBST (Inorder):")
     bst.display()
 
+    print("\nDeleting node with two children (70)...")
+    bst.delete(70)
+    bst.display()
+
     print("\nDeleting leaf node (20)...")
     bst.delete(20)
     bst.display()
 
-    print("\nDeleting node with two children (30)...")
-    bst.delete(30)
-    bst.display()
-
     print("\nSearch Results:")
     print(f"Search 60: {bst.search(60)}")
-    print(f"Search 20: {bst.search(20)}")
+    print(f"Search 70: {bst.search(70)}")
 
 
 if __name__ == "__main__":
