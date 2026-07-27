@@ -3,26 +3,30 @@
 # Methods: insert (at end), delete (by value), search (by value), display
 """
 
+from typing import Optional, TypeVar, Generic
 
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
-        self.prev = None
+T = TypeVar("T")
 
 
-class LinkedList:
-    def __init__(self):
-        self.head = None
-        self.tail = None
+class Node(Generic[T]):
+    def __init__(self, data: T) -> None:
+        self.data: T = data
+        self.next: Optional["Node[T]"] = None
+        self.prev: Optional["Node[T]"] = None
 
-    def insert(self, data):
+
+class LinkedList(Generic[T]):
+    def __init__(self) -> None:
+        self.head: Optional[Node[T]] = None
+        self.tail: Optional[Node[T]] = None
+
+    def insert(self, data: T) -> None:
         """
         Insert a new node at the end of the linked list.
         Time Complexity: O(1)
         """
 
-        new_node = Node(data)
+        new_node: Node[T] = Node(data)
 
         if self.head is None:
             self.head = new_node
@@ -30,16 +34,17 @@ class LinkedList:
             return
 
         new_node.prev = self.tail
-        self.tail.next = new_node
+        if self.tail:
+            self.tail.next = new_node
         self.tail = new_node
 
-    def delete(self, data):
+    def delete(self, data: T) -> bool:
         """
         Delete the first node containing the given value.
         Time Complexity: O(n)
         """
 
-        current = self.head
+        current: Optional[Node[T]] = self.head
 
         while current:
 
@@ -67,13 +72,13 @@ class LinkedList:
 
         return False
 
-    def search(self, data):
+    def search(self, data: T) -> bool:
         """
         Search for a value in the linked list.
         Time Complexity: O(n)
         """
 
-        current = self.head
+        current: Optional[Node[T]] = self.head
 
         while current:
             if current.data == data:
@@ -82,13 +87,13 @@ class LinkedList:
 
         return False
 
-    def display(self):
+    def display(self) -> None:
         """
         Display all elements from head to tail.
         """
 
-        current = self.head
-        nodes = []
+        current: Optional[Node[T]] = self.head
+        nodes: list[str] = []
 
         while current:
             nodes.append(str(current.data))
@@ -98,12 +103,13 @@ class LinkedList:
         print(" <-> ".join(nodes))
 
 
-def main():
+def main() -> None:
     print("=" * 45)
     print("DOUBLY LINKED LIST")
     print("=" * 45)
 
-    linked_list = LinkedList()
+    # Ab hum mypy ko explicitly batayenge ke ye LinkedList integers store karegi
+    linked_list: LinkedList[int] = LinkedList()
 
     print("\nInserting values: 10, 20, 30, 40")
     for value in [10, 20, 30, 40]:

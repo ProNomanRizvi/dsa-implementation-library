@@ -4,20 +4,23 @@
 """
 
 from collections import deque
+from typing import TypeVar, Generic, Optional
+
+T = TypeVar("T")
 
 
-class Queue:
-    def __init__(self):
-        self.items = deque()
+class Queue(Generic[T]):
+    def __init__(self) -> None:
+        self.items: deque[T] = deque()
 
-    def insert(self, data):
+    def insert(self, data: T) -> None:
         """
         Enqueue an item at the rear of the queue.
         Time Complexity: O(1)
         """
         self.items.append(data)
 
-    def delete(self):
+    def delete(self) -> Optional[T]:
         """
         Dequeue and return the front item.
         Time Complexity: O(1)
@@ -30,14 +33,14 @@ class Queue:
 
         return self.items.popleft()
 
-    def search(self, data):
+    def search(self, data: T) -> bool:
         """
         Search for a value in the queue.
         Time Complexity: O(n)
         """
         return data in self.items
 
-    def display(self):
+    def display(self) -> None:
         """
         Display queue contents from front to rear.
         """
@@ -47,12 +50,13 @@ class Queue:
             print(" -> ".join(str(item) for item in self.items))
 
 
-def main():
+def main() -> None:
     print("=" * 40)
     print("QUEUE (FIFO)")
     print("=" * 40)
 
-    queue = Queue()
+    # Mypy ko define kar rahe hain ke ye queue sirf int store karegi
+    queue: Queue[int] = Queue()
 
     print("\nInserting values: 10, 20, 30, 40")
     for value in [10, 20, 30, 40]:

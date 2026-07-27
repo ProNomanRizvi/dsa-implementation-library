@@ -3,19 +3,23 @@
 # Methods: insert (push), delete (pop), search, display
 """
 
+from typing import TypeVar, Generic, Optional
 
-class Stack:
-    def __init__(self):
-        self.items = []
+T = TypeVar("T")
 
-    def insert(self, data):
+
+class Stack(Generic[T]):
+    def __init__(self) -> None:
+        self.items: list[T] = []
+
+    def insert(self, data: T) -> None:
         """
         Push an item onto the stack.
         Time Complexity: O(1)
         """
         self.items.append(data)
 
-    def delete(self):
+    def delete(self) -> Optional[T]:
         """
         Pop and return the top item.
         Time Complexity: O(1)
@@ -28,14 +32,14 @@ class Stack:
 
         return self.items.pop()
 
-    def search(self, data):
+    def search(self, data: T) -> bool:
         """
         Search for a value in the stack.
         Time Complexity: O(n)
         """
         return data in self.items
 
-    def display(self):
+    def display(self) -> None:
         """
         Display stack contents from bottom to top.
         """
@@ -45,12 +49,13 @@ class Stack:
             print(" -> ".join(str(item) for item in self.items))
 
 
-def main():
+def main() -> None:
     print("=" * 40)
     print("STACK (LIFO)")
     print("=" * 40)
 
-    stack = Stack()
+    # Mypy ko batana ke is stack mein specifically integers honge
+    stack: Stack[int] = Stack()
 
     print("\nInserting values: 10, 20, 30, 40")
     for value in [10, 20, 30, 40]:

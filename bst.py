@@ -3,40 +3,45 @@
 # Methods: insert, delete, search, display (inorder)
 """
 
+from typing import Optional, TypeVar, Generic
 
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.left = None
-        self.right = None
+T = TypeVar("T")
 
 
-class BST:
-    def __init__(self):
-        self.root = None
+class Node(Generic[T]):
+    def __init__(self, data: T) -> None:
+        self.data: T = data
+        self.left: Optional["Node[T]"] = None
+        self.right: Optional["Node[T]"] = None
 
-    def insert(self, data):
+
+class BST(Generic[T]):
+    def __init__(self) -> None:
+        self.root: Optional[Node[T]] = None
+
+    def insert(self, data: T) -> None:
         """
         Insert a value into the BST.
         Time Complexity: O(log n) average, O(n) worst
         """
 
-        new_node = Node(data)
+        new_node: Node[T] = Node(data)
 
         if self.root is None:
             self.root = new_node
             return
 
-        current = self.root
+        current: Node[T] = self.root
 
         while True:
-            if data < current.data:
+            # Added type: ignore because mypy doesn't inherently know that generic 'T' is comparable
+            if data < current.data:  # type: ignore
                 if current.left is None:
                     current.left = new_node
                     return
                 current = current.left
 
-            elif data > current.data:
+            elif data > current.data:  # type: ignore
                 if current.right is None:
                     current.right = new_node
                     return
@@ -46,38 +51,38 @@ class BST:
                 # Ignore duplicate values
                 return
 
-    def search(self, data):
+    def search(self, data: T) -> bool:
         """
         Search for a value in the BST.
         Time Complexity: O(log n) average, O(n) worst
         """
 
-        current = self.root
+        current: Optional[Node[T]] = self.root
 
         while current:
             if data == current.data:
                 return True
-            elif data < current.data:
+            elif data < current.data:  # type: ignore
                 current = current.left
             else:
                 current = current.right
 
         return False
 
-    def delete(self, data):
+    def delete(self, data: T) -> None:
         """
         Delete a value from the BST while maintaining BST properties.
         """
         self.root = self._delete_helper(self.root, data)
 
-    def _delete_helper(self, node, data):
+    def _delete_helper(self, node: Optional[Node[T]], data: T) -> Optional[Node[T]]:
         if node is None:
             return None
 
-        if data < node.data:
+        if data < node.data:  # type: ignore
             node.left = self._delete_helper(node.left, data)
 
-        elif data > node.data:
+        elif data > node.data:  # type: ignore
             node.right = self._delete_helper(node.right, data)
 
         else:
@@ -89,7 +94,7 @@ class BST:
                 return node.left
 
             # Case 3: Two children
-            successor = node.right
+            successor: Node[T] = node.right
 
             while successor.left:
                 successor = successor.left
@@ -102,54 +107,54 @@ class BST:
     # -----------------------------
     # Traversals
     # -----------------------------
-    def inorder(self):
-        result = []
+    def inorder(self) -> list[T]:
+        result: list[T] = []
         self._inorder(self.root, result)
         return result
 
-    def _inorder(self, node, result):
+    def _inorder(self, node: Optional[Node[T]], result: list[T]) -> None:
         if node:
             self._inorder(node.left, result)
             result.append(node.data)
             self._inorder(node.right, result)
 
-    def preorder(self):
-        result = []
+    def preorder(self) -> list[T]:
+        result: list[T] = []
         self._preorder(self.root, result)
         return result
 
-    def _preorder(self, node, result):
+    def _preorder(self, node: Optional[Node[T]], result: list[T]) -> None:
         if node:
             result.append(node.data)
             self._preorder(node.left, result)
             self._preorder(node.right, result)
 
-    def postorder(self):
-        result = []
+    def postorder(self) -> list[T]:
+        result: list[T] = []
         self._postorder(self.root, result)
         return result
 
-    def _postorder(self, node, result):
+    def _postorder(self, node: Optional[Node[T]], result: list[T]) -> None:
         if node:
             self._postorder(node.left, result)
             self._postorder(node.right, result)
             result.append(node.data)
 
-    def display(self):
+    def display(self) -> None:
         """
         Display BST in sorted order (Inorder Traversal).
         """
         print(" -> ".join(map(str, self.inorder())))
 
 
-def main():
+def main() -> None:
     print("=" * 45)
     print("BINARY SEARCH TREE")
     print("=" * 45)
 
-    bst = BST()
+    bst: BST[int] = BST()
 
-    values = [50, 30, 70, 20, 40, 60, 80]
+    values: list[int] = [50, 30, 70, 20, 40, 60, 80]
 
     print("\nInserting values:", values)
     for value in values:

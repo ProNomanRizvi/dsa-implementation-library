@@ -4,35 +4,38 @@
 """
 
 from collections import deque
+from typing import Optional, TypeVar, Generic
+
+T = TypeVar("T")
 
 
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.left = None
-        self.right = None
+class Node(Generic[T]):
+    def __init__(self, data: T) -> None:
+        self.data: T = data
+        self.left: Optional["Node[T]"] = None
+        self.right: Optional["Node[T]"] = None
 
 
-class BinaryTree:
-    def __init__(self):
-        self.root = None
+class BinaryTree(Generic[T]):
+    def __init__(self) -> None:
+        self.root: Optional[Node[T]] = None
 
-    def insert(self, data):
+    def insert(self, data: T) -> None:
         """
         Insert a node at the first available position (Level-Order).
         Time Complexity: O(n)
         """
 
-        new_node = Node(data)
+        new_node: Node[T] = Node(data)
 
         if self.root is None:
             self.root = new_node
             return
 
-        queue = deque([self.root])
+        queue: deque[Node[T]] = deque([self.root])
 
         while queue:
-            current = queue.popleft()
+            current: Node[T] = queue.popleft()
 
             if current.left is None:
                 current.left = new_node
@@ -44,7 +47,7 @@ class BinaryTree:
                 return
             queue.append(current.right)
 
-    def search(self, data):
+    def search(self, data: T) -> bool:
         """
         Search for a value using Level-Order Traversal.
         Time Complexity: O(n)
@@ -53,10 +56,10 @@ class BinaryTree:
         if self.root is None:
             return False
 
-        queue = deque([self.root])
+        queue: deque[Node[T]] = deque([self.root])
 
         while queue:
-            current = queue.popleft()
+            current: Node[T] = queue.popleft()
 
             if current.data == data:
                 return True
@@ -69,7 +72,7 @@ class BinaryTree:
 
         return False
 
-    def delete(self, data):
+    def delete(self, data: T) -> bool:
         """
         Delete a node by replacing it with the deepest-rightmost node,
         then removing that deepest node.
@@ -86,11 +89,12 @@ class BinaryTree:
                 return True
             return False
 
-        target = None
-        last_node = None
-        last_parent = None
+        target: Optional[Node[T]] = None
+        last_node: Optional[Node[T]] = None
+        last_parent: Optional[Node[T]] = None
 
-        queue = deque([(self.root, None)])
+        # Queue contains a tuple of (current_node, parent_node)
+        queue: deque[tuple[Node[T], Optional[Node[T]]]] = deque([(self.root, None)])
 
         while queue:
             current, parent = queue.popleft()
@@ -107,7 +111,8 @@ class BinaryTree:
             if current.right:
                 queue.append((current.right, current))
 
-        if target is None:
+        # Ensure we found the target and valid last nodes for mypy safety
+        if target is None or last_node is None or last_parent is None:
             return False
 
         # Replace target value with deepest-rightmost node value
@@ -121,7 +126,7 @@ class BinaryTree:
 
         return True
 
-    def display(self):
+    def display(self) -> None:
         """
         Display the tree in Level-Order.
         """
@@ -130,11 +135,11 @@ class BinaryTree:
             print("Empty")
             return
 
-        result = []
-        queue = deque([self.root])
+        result: list[str] = []
+        queue: deque[Node[T]] = deque([self.root])
 
         while queue:
-            current = queue.popleft()
+            current: Node[T] = queue.popleft()
             result.append(str(current.data))
 
             if current.left:
@@ -146,12 +151,12 @@ class BinaryTree:
         print(" -> ".join(result))
 
 
-def main():
+def main() -> None:
     print("=" * 45)
     print("BINARY TREE")
     print("=" * 45)
 
-    tree = BinaryTree()
+    tree: BinaryTree[int] = BinaryTree()
 
     print("\nInserting values: 10, 20, 30, 40, 50")
 
