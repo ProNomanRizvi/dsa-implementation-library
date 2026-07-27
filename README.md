@@ -58,6 +58,8 @@ This started as practice for interview-style DSA questions and turned into a ref
 | `search` | O(log n) | O(n) | Same skew risk as insert |
 | `display` | O(n) | O(n) | Inorder traversal, so it happens to print in sorted order |
 
+`preorder` and `postorder` are also available (both O(n)) — useful for serializing a tree or deleting it node-by-node, respectively.
+
 The BST worst case only shows up when the tree becomes a skewed line instead of branching — that's why balanced trees (AVL, Red-Black) exist, though this library doesn't implement self-balancing.
 
 ## Usage
@@ -140,6 +142,10 @@ tree.display()
 
 print(tree.search(60))  # True
 print(tree.search(70))  # False, just deleted
+
+print(tree.inorder())   # [20, 30, 40, 50, 60, 80] — same order display() uses
+print(tree.preorder())  # [50, 30, 20, 40, 60, 80]
+print(tree.postorder()) # [20, 40, 30, 60, 80, 50]
 ```
 
 ## Running Tests
