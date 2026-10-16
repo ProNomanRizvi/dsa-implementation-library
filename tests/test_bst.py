@@ -1,3 +1,7 @@
+import random
+
+import pytest
+
 from bst import BST
 
 
@@ -65,3 +69,46 @@ def test_delete_root_node():
 
     assert bst.search(50) is False
     assert bst.inorder() == [20, 30, 40, 60, 70, 80]
+
+
+def test_delete_successor_with_right_child():
+    bst = BST()
+    for value in [50, 30, 80, 60, 90, 70, 65]:
+        bst.insert(value)
+
+    bst.delete(50)
+
+    assert bst.inorder() == [30, 60, 65, 70, 80, 90]
+    assert bst.search(65)
+
+
+@pytest.mark.parametrize("values", [range(1200), range(1199, -1, -1)])
+def test_skewed_tree_traversal_and_deletion_without_recursion(values):
+    bst = BST()
+    inserted = list(values)
+    for value in inserted:
+        bst.insert(value)
+
+    assert bst.inorder() == list(range(1200))
+    assert bst.preorder() == inserted
+    assert bst.postorder() == inserted[::-1]
+
+    for value in [inserted[-1], inserted[600], inserted[0]]:
+        bst.delete(value)
+        assert not bst.search(value)
+    assert bst.inorder() == sorted(set(inserted) - {inserted[-1], inserted[600], inserted[0]})
+
+
+def test_mixed_deletions_preserve_sorted_contents():
+    rng = random.Random(42)
+    values = list(range(100))
+    rng.shuffle(values)
+    bst = BST()
+    for value in values:
+        bst.insert(value)
+
+    remaining = set(values)
+    for value in rng.sample(values, 50):
+        bst.delete(value)
+        remaining.remove(value)
+        assert bst.inorder() == sorted(remaining)

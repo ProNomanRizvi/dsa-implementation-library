@@ -1,6 +1,6 @@
 # DSA Implementation Library
 
-A small collection of core data structures built from scratch in Python: a doubly linked list, a stack, a queue, a binary tree, and a binary search tree. No built-in structures are used for the actual logic (the queue uses `collections.deque` internally for O(1) operations at both ends, but the insert/delete/search/display interface is written by hand).
+A small educational collection of core data structures in Python: a doubly linked list, a stack, a queue, a binary tree, and a binary search tree. The linked list and trees manage their own nodes; the stack wraps a Python list and the queue wraps `collections.deque`. Each provides the same small interface for comparing behavior and complexity.
 
 Every structure exposes the same four methods so they're easy to compare and reuse:
 
@@ -86,7 +86,7 @@ Each of the other four files (`linked_list.py`, `custom_queue.py`, `binary_tree.
 
 `preorder` and `postorder` are also available (both O(n)) — useful for serializing a tree or deleting it node-by-node, respectively.
 
-The BST worst case only shows up when the tree becomes a skewed line instead of branching — that's why balanced trees (AVL, Red-Black) exist, though this library doesn't implement self-balancing.
+The BST worst case shows up when the tree becomes a skewed line instead of branching. Deletion and traversals use iteration, so a deep tree does not hit Python's recursion limit; they still take O(n) time in the worst case. Balanced trees (AVL, Red-Black) address the skew, but this library does not implement self-balancing.
 
 ## Usage
 
@@ -178,21 +178,24 @@ print(tree.postorder()) # [20, 40, 30, 60, 80, 50]
 
 A few choices that came up while building these:
 
-- **Queue uses `collections.deque`, not a plain list.** Popping from index 0 of a Python list is O(n) since every remaining element shifts left. `deque` is doubly-linked under the hood, so `popleft()` stays O(1) regardless of size. The insert/delete/search/display interface is still hand-written — `deque` is only used for the underlying storage.
+- **Queue uses `collections.deque`, not a plain list.** Popping from index 0 of a Python list is O(n) since every remaining element shifts left. `deque.popleft()` is O(1) rather than shifting the remaining elements. The insert/delete/search/display interface is still hand-written — `deque` is only used for the underlying storage.
 - **BST has no self-balancing.** Insert and delete degrade to O(n) if the tree gets skewed (e.g. inserting values that are already sorted). Fixing that means implementing rotations (AVL or Red-Black), which was left out on purpose to keep this repo focused on the base structures rather than turning into a balanced-tree library.
 - **Binary tree deletion swaps in the deepest-rightmost node**, not just any leaf, to keep the tree as close to complete as it was before the deletion. Same idea BSTs use with the inorder successor, just without the ordering constraint to help find it.
 - **No third-party runtime dependencies.** Everything is standard library (`collections`, `typing`). `pytest` and `mypy` are dev-only tools for testing and type checking, which is why there's no `requirements.txt` — there's nothing to pin.
 
 ## Running Tests
 
-This project uses `pytest`. Install it and run the suite from the repo root:
+Create a virtual environment, then run the same tests and type check used in CI:
 
 ```bash
-pip install pytest --break-system-packages
-pytest -v
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install pytest mypy
+python -m pytest -q
+mypy *.py
 ```
 
-All structures are covered: insert, delete (including edge cases like empty structures, leaf nodes, nodes with two children, and root deletion for the BST), and search.
+All structures are covered: insert, delete (including edge cases like empty structures, leaf nodes, nodes with two children, and root deletion for the BST), and search. The BST tests also exercise both skew directions with 1,200 nodes.
 
 ## Why this exists
 

@@ -73,72 +73,82 @@ class BST(Generic[T]):
         """
         Delete a value from the BST while maintaining BST properties.
         """
-        self.root = self._delete_helper(self.root, data)
+        parent: Optional[Node[T]] = None
+        current = self.root
+        while current is not None and current.data != data:
+            parent = current
+            if data < current.data:  # type: ignore
+                current = current.left
+            else:
+                current = current.right
 
-    def _delete_helper(self, node: Optional[Node[T]], data: T) -> Optional[Node[T]]:
-        if node is None:
-            return None
+        if current is None:
+            return
 
-        if data < node.data:  # type: ignore
-            node.left = self._delete_helper(node.left, data)
-
-        elif data > node.data:  # type: ignore
-            node.right = self._delete_helper(node.right, data)
-
-        else:
-            # Case 1 & 2: No child or one child
-            if node.left is None:
-                return node.right
-
-            if node.right is None:
-                return node.left
-
-            # Case 3: Two children
-            successor: Node[T] = node.right
-
-            while successor.left:
+        if current.left is not None and current.right is not None:
+            successor_parent = current
+            successor = current.right
+            while successor.left is not None:
+                successor_parent = successor
                 successor = successor.left
+            current.data = successor.data
+            parent = successor_parent
+            current = successor
 
-            node.data = successor.data
-            node.right = self._delete_helper(node.right, successor.data)
-
-        return node
+        child = current.left if current.left is not None else current.right
+        if parent is None:
+            self.root = child
+        elif parent.left is current:
+            parent.left = child
+        else:
+            parent.right = child
 
     # -----------------------------
     # Traversals
     # -----------------------------
     def inorder(self) -> list[T]:
         result: list[T] = []
-        self._inorder(self.root, result)
+        stack: list[Node[T]] = []
+        current = self.root
+        while current is not None or stack:
+            while current is not None:
+                stack.append(current)
+                current = current.left
+            current = stack.pop()
+            result.append(current.data)
+            current = current.right
         return result
-
-    def _inorder(self, node: Optional[Node[T]], result: list[T]) -> None:
-        if node:
-            self._inorder(node.left, result)
-            result.append(node.data)
-            self._inorder(node.right, result)
 
     def preorder(self) -> list[T]:
         result: list[T] = []
-        self._preorder(self.root, result)
+        if self.root is None:
+            return result
+        stack = [self.root]
+        while stack:
+            current = stack.pop()
+            result.append(current.data)
+            if current.right is not None:
+                stack.append(current.right)
+            if current.left is not None:
+                stack.append(current.left)
         return result
-
-    def _preorder(self, node: Optional[Node[T]], result: list[T]) -> None:
-        if node:
-            result.append(node.data)
-            self._preorder(node.left, result)
-            self._preorder(node.right, result)
 
     def postorder(self) -> list[T]:
         result: list[T] = []
-        self._postorder(self.root, result)
+        if self.root is None:
+            return result
+        stack = [(self.root, False)]
+        while stack:
+            current, visited = stack.pop()
+            if visited:
+                result.append(current.data)
+                continue
+            stack.append((current, True))
+            if current.right is not None:
+                stack.append((current.right, False))
+            if current.left is not None:
+                stack.append((current.left, False))
         return result
-
-    def _postorder(self, node: Optional[Node[T]], result: list[T]) -> None:
-        if node:
-            self._postorder(node.left, result)
-            self._postorder(node.right, result)
-            result.append(node.data)
 
     def display(self) -> None:
         """
